@@ -16,7 +16,7 @@ RUN dnf install -y dnf-plugins-core && \
 	dnf install --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm -y && \
     dnf makecache
 
-RUN dnf install -y file cmake ninja-build git wget \
+RUN dnf install -y file cmake ninja-build git wget meson \
     gcc-toolset-14 gcc-toolset-14-gcc gcc-toolset-14-gcc-c++ gcc-toolset-14-libstdc++-devel \
     libxcb-devel libxkbcommon-devel libxkbcommon-x11-devel xcb-util-devel xcb-util-image-devel \
     libX11-devel libXext-devel mesa-libGL-devel mesa-libGLU-devel xcb-util-keysyms-devel \
@@ -24,7 +24,7 @@ RUN dnf install -y file cmake ninja-build git wget \
     sqlite-devel libzstd-devel libicu-devel glib2-devel xcb-util-wm-devel libXrender-devel xcb-util-cursor-devel hunspell hunspell-*.noarch hunspell-devel \
 	systemd-devel libb2-devel libproxy-devel at-spi2-core-devel mtdev-devel tslib-devel gtk3-devel libinput-devel \
 	openssl3 openssl3-devel pcre2-devel harfbuzz-devel vulkan-headers mesa-libgbm-devel double-conversion-devel libwebp-devel libmng-devel glibc-langpack-en \
-	protobuf-devel clang-devel \
+	protobuf-devel clang-devel wayland-devel wayland-protocols-devel libgbm-devel libdrm-devel mesa-libEGL-devel mesa-libGLES-devel libffi-devel \
     flex flex-devel m4 \
     && dnf clean all && rm -rf /var/cache/dnf/*
 	
@@ -33,6 +33,16 @@ ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
 WORKDIR /root
+
+RUN . ${ENABLE_GCC_TOOLSET} && \
+    WPROTO_VER=1.27 && \
+    wget https://gitlab.freedesktop.org/wayland/wayland-protocols/-/releases/${WPROTO_VER}/downloads/wayland-protocols-${WPROTO_VER}.tar.xz && \
+    tar -xf wayland-protocols-${WPROTO_VER}.tar.xz && \
+    cd wayland-protocols-${WPROTO_VER} && \
+    meson setup build --prefix=/usr --buildtype=release && \
+    ninja -C build install && \
+    cd .. && \
+    rm -rf wayland-protocols-${WPROTO_VER} wayland-protocols-${WPROTO_VER}.tar.xz
 
 RUN wget https://ftp.gnu.org/gnu/bison/bison-${BISON_VERSION}.tar.gz \ 
     && tar -xzf bison-${BISON_VERSION}.tar.gz && rm -f bison-${BISON_VERSION}.tar.gz && cd bison-${BISON_VERSION} \
