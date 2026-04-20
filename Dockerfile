@@ -48,7 +48,7 @@ RUN wget https://ftp.gnu.org/gnu/bison/bison-${BISON_VERSION}.tar.gz \
     && tar -xzf bison-${BISON_VERSION}.tar.gz && rm -f bison-${BISON_VERSION}.tar.gz && cd bison-${BISON_VERSION} \
 	&& . ${ENABLE_GCC_TOOLSET} && ./configure && make -j$(nproc) && make install && cd .. && rm -rf bison-${BISON_VERSION}
 	
-ARG QT_BIN_URL="https://github.com/llxx2013/almalinux-qt-builder/releases/download/${QT_VERSION}/qt-${QT_VERSION}-almalinux8-x86_64.tar.xz"
+ARG QT_BIN_URL="https://github.com/llxx2013/almalinux-qt-builder/releases/download/v${QT_VERSION}/qt-${QT_VERSION}-almalinux8-x86_64.tar.xz"
 
 RUN mkdir -p /opt && \
     wget -qO- ${QT_BIN_URL} | tar -xJ -C /opt
